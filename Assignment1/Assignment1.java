@@ -47,6 +47,8 @@ public class Assignment1{
 				ob.name.remove(ob.name.size()-1);
 				ob.price.remove(ob.price.size()-1);
 				ob.quantity.remove(ob.quantity.size()-1);				
+				sc.nextLine();
+				continue;
 			}
 			System.out.println("Do you want to enter details of any other item (y/n): ");
 			char ch=sc.next().charAt(0);
