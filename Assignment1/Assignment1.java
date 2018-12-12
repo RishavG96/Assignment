@@ -61,9 +61,13 @@ public class Assignment1{
 		Iterator i=ob.name.iterator();
 		Iterator i1=ob.type.iterator();
 		Iterator i2=tax.iterator();
-		while(i.hasNext() && i1.hasNext() && i2.hasNext())
+		Iterator i3=ob.price.iterator();
+		System.out.println("Name Type Tax TotalPrice");
+		while(i.hasNext() && i1.hasNext() && i2.hasNext() && i3.hasNext())
 		{
-			System.out.println(i.next()+" "+i1.next()+" "+i2.next());
+			double t=Double.parseDouble(i2.next()+"");
+			double total=t+Double.parseDouble(i3.next()+"");
+			System.out.println(i.next()+" "+i1.next()+" "+t+" "+total);
 		}	
 	}
 	public void calculate()
