@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button android:text="Edit"
+        android:background="?attr/actionBarItemBackground"
+        android:layout_width="?attr/actionBarSize"
+        android:layout_height="?attr/actionBarSize"
+        android:scaleType="centerInside"
+        android:id="@+id/editbutton"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"/>
+
+    <TextView android:text="Detail"
+        android:background="?attr/actionBarItemBackground"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_width="wrap_content"
+        android:scaleType="centerInside"
+        android:id="@+id/text_appname"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:layout_marginLeft="70dp"
+        android:textColor="#FFF"
+        android:paddingTop="5dp"
+        android:layout_toRightOf="@+id/editbutton"
+        android:layout_alignParentTop="true"/>
+
+    <Button android:text="Delete"
+        android:background="?attr/actionBarItemBackground"
+        android:layout_width="?attr/actionBarSize"
+        android:layout_height="?attr/actionBarSize"
+        android:scaleType="centerInside"
+        android:id="@+id/deletebutton"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"/>
+</RelativeLayout>
