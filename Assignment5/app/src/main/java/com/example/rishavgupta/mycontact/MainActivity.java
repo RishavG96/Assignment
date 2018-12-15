@@ -1,14 +1,19 @@
 package com.example.rishavgupta.mycontact;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -39,10 +44,15 @@ public class MainActivity extends AppCompatActivity{
     public static List<ContactVO> contactVOList;
     public static int position;
     SQLiteDatabase db;
+    AlertDialog.Builder adb;
+    AllContactsAdapter contactAdapter;
+    Context context;
+    RecyclerView.ViewHolder vh;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        context=this;
         if(isPermissionGranted()){
             call_action();
         }
@@ -68,7 +78,7 @@ public class MainActivity extends AppCompatActivity{
                 contactVO.setContactNumber(c.getString(2));
                 contactVOList.add(contactVO);
             }
-            AllContactsAdapter contactAdapter = new AllContactsAdapter(contactVOList, getApplicationContext());
+            contactAdapter = new AllContactsAdapter(contactVOList, getApplicationContext());
             rvContacts.setLayoutManager(new LinearLayoutManager(this));
             rvContacts.setAdapter(contactAdapter);
         }
@@ -87,6 +97,51 @@ public class MainActivity extends AppCompatActivity{
                     }
                 })
         );
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+
+                vh=viewHolder;
+                if (direction == ItemTouchHelper.RIGHT || direction == ItemTouchHelper.LEFT) {
+                    adb=new AlertDialog.Builder(context);
+                    adb.setTitle("Confirm Delete");
+                    adb.setMessage("“Are you really want to delete the records?");
+                    adb.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                        }
+                    });
+                    adb.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            String id=contactVOList.get(vh.getAdapterPosition()).getContactID();
+                            MainActivity.contactVOList.remove(MainActivity.position);
+                            db.delete("contacts1", "id" + "=" + id, null);
+//                    contactAdapter = new AllContactsAdapter(contactVOList, context);
+//                    rvContacts.setLayoutManager(new LinearLayoutManager(context));
+//                    rvContacts.setAdapter(contactAdapter);
+                            //contactAdapter.notifyItemRangeChanged(viewHolder.getAdapterPosition(),contactVOList.size()-1);
+//                    Intent i=new Intent(getApplicationContext(),MainActivity.class);
+//                    startActivity(i);
+                            Intent intent1=new Intent(context, MainActivity.class);
+                            intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            context.startActivity(intent1);
+
+                            Toast.makeText(getApplicationContext(),"Contact Deleted",Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    adb.show();
+                }
+            }
+        }).attachToRecyclerView(rvContacts);
     }
     public  boolean isPermissionGranted() {
         if (Build.VERSION.SDK_INT >= 23) {
